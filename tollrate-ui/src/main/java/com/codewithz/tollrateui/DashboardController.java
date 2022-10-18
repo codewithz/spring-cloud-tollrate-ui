@@ -1,5 +1,6 @@
 package com.codewithz.tollrateui;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,14 +9,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Controller
 public class DashboardController {
+	
+	@Autowired
+	WebClient.Builder webClientBuider;
 
     @RequestMapping("/dashboard")
 	public String GetTollRate(@RequestParam(defaultValue = "1000") Integer stationId, Model m) {
 
-        WebClient client = WebClient.create();
+//        WebClient client = WebClient.create();
 
-        TollRate rate = client.get()
-            .uri("http://localhost:8082/tollrate/" + stationId)
+        TollRate rate = webClientBuider.build().get()
+            .uri("http://tollrate-service/tollrate/" + stationId)
             .retrieve()
             .bodyToMono(TollRate.class)
             .block();
